@@ -1,5 +1,6 @@
 package br.com.alura.adopet.api.controller;
 
+import br.com.alura.adopet.api.dto.TutorDTO;
 import br.com.alura.adopet.api.model.Tutor;
 import br.com.alura.adopet.api.service.TutorService;
 import jakarta.validation.Valid;
@@ -17,13 +18,13 @@ public class TutorController {
 
     @PostMapping
     @Transactional
-    public ResponseEntity<String> cadastrar(@RequestBody @Valid Tutor tutor) {
+    public ResponseEntity<String> cadastrar(@RequestBody @Valid TutorDTO tutor) {
         return tutorService.cadastrarTutor(tutor);
     }
 
     @PutMapping
     @Transactional
-    public ResponseEntity<String> atualizar(@RequestBody @Valid Tutor tutor) {
+    public ResponseEntity<String> atualizar(@RequestBody @Valid TutorDTO tutor) {
         return tutorService.atualizarTutor(tutor);
     }
 
