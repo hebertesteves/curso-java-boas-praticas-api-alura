@@ -1,5 +1,6 @@
 package br.com.alura.adopet.api.service;
 
+import br.com.alura.adopet.api.dto.PetDTO;
 import br.com.alura.adopet.api.model.Pet;
 import br.com.alura.adopet.api.repository.PetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,12 +16,12 @@ public class PetService {
     @Autowired
     private PetRepository repository;
 
-    public ResponseEntity<List<Pet>> listarTodosOsPetsDisponiveis() {
+    public ResponseEntity<List<PetDTO>> listarTodosOsPetsDisponiveis() {
         List<Pet> pets = repository.findAll();
-        List<Pet> disponiveis = new ArrayList<>();
+        List<PetDTO> disponiveis = new ArrayList<>();
         for (Pet pet : pets) {
             if (pet.getAdotado() == false) {
-                disponiveis.add(pet);
+                disponiveis.add(new PetDTO(pet));
             }
         }
         return ResponseEntity.ok(disponiveis);
