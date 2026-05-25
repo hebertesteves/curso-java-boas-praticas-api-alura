@@ -17,13 +17,11 @@ public class PetService {
     private PetRepository repository;
 
     public ResponseEntity<List<PetDTO>> listarTodosOsPetsDisponiveis() {
-        List<Pet> pets = repository.findAll();
-        List<PetDTO> disponiveis = new ArrayList<>();
-        for (Pet pet : pets) {
-            if (pet.getAdotado() == false) {
-                disponiveis.add(new PetDTO(pet));
-            }
-        }
+        List<PetDTO> disponiveis = repository.findAllByAdotadoFalse()
+                .stream()
+                .map(PetDTO::new)
+                .toList();
+
         return ResponseEntity.ok(disponiveis);
     }
 }
