@@ -60,8 +60,20 @@ public class AbrigoController {
 
     @PostMapping("/{idOuNome}/pets")
     @Transactional
-    public ResponseEntity<String> cadastrarPet(@PathVariable String idOuNome, @RequestBody @Valid Pet pet) {
-        return abrigoService.cadastrarPet(idOuNome, pet);
+    public ResponseEntity<String> cadastrarPet(@PathVariable String idOuNome, @RequestBody @Valid PetDTO pet) {
+        try {
+            abrigoService.cadastrarPetPorId(idOuNome, pet);
+        } catch (EntityNotFoundException enfe) {
+            return ResponseEntity.notFound().build();
+        } catch (NumberFormatException nfe) {
+            try {
+                abrigoService.cadastrarPetPorNome(idOuNome, pet);
+            } catch (EntityNotFoundException enfe) {
+                return ResponseEntity.notFound().build();
+            }
+        }
+
+        return ResponseEntity.ok().build();
     }
 
 }
