@@ -1,5 +1,8 @@
 package br.com.alura.adopet.api.service;
 
+import br.com.alura.adopet.api.dto.AbrigoDTO;
+import br.com.alura.adopet.api.dto.PetDTO;
+import br.com.alura.adopet.api.exception.ValidacaoException;
 import br.com.alura.adopet.api.model.Abrigo;
 import br.com.alura.adopet.api.model.Pet;
 import br.com.alura.adopet.api.repository.AbrigoRepository;
@@ -16,38 +19,38 @@ public class AbrigoService {
     @Autowired
     private AbrigoRepository repository;
 
-    public ResponseEntity<List<Abrigo>> listarTodosOsAbrigos() {
-        return ResponseEntity.ok(repository.findAll());
+    public List<AbrigoDTO> listarTodosOsAbrigos() {
+        return repository.findAll()
+                .stream()
+                .map(AbrigoDTO::new)
+                .toList();
     }
 
-    public ResponseEntity<String> cadastrarAbrigo(Abrigo abrigo) {
-        boolean nomeJaCadastrado = repository.existsByNome(abrigo.getNome());
-        boolean telefoneJaCadastrado = repository.existsByTelefone(abrigo.getTelefone());
-        boolean emailJaCadastrado = repository.existsByEmail(abrigo.getEmail());
+    public void cadastrarAbrigo(AbrigoDTO abrigoDTO) {
+        boolean nomeJaCadastrado = repository.existsByNome(abrigoDTO.nome());
+        boolean telefoneJaCadastrado = repository.existsByTelefone(abrigoDTO.telefone());
+        boolean emailJaCadastrado = repository.existsByEmail(abrigoDTO.email());
 
         if (nomeJaCadastrado || telefoneJaCadastrado || emailJaCadastrado) {
-            return ResponseEntity.badRequest().body("Dados já cadastrados para outro abrigo!");
-        } else {
-            repository.save(abrigo);
-            return ResponseEntity.ok().build();
+            throw new ValidacaoException("Dados já cadastrados para outro abrigo!");
         }
+
+        repository.save(new Abrigo(abrigoDTO.nome(), abrigoDTO.telefone(), abrigoDTO.email()));
     }
 
-    public ResponseEntity<List<Pet>> listarPets(String idOuNome) {
-        try {
-            Long id = Long.parseLong(idOuNome);
-            List<Pet> pets = repository.getReferenceById(id).getPets();
-            return ResponseEntity.ok(pets);
-        } catch (EntityNotFoundException enfe) {
-            return ResponseEntity.notFound().build();
-        } catch (NumberFormatException e) {
-            try {
-                List<Pet> pets = repository.findByNome(idOuNome).getPets();
-                return ResponseEntity.ok(pets);
-            } catch (EntityNotFoundException enfe) {
-                return ResponseEntity.notFound().build();
-            }
-        }
+    public List<PetDTO> listarPetsPorId(String idOuNome) {
+        Long id = Long.parseLong(idOuNome);
+        return repository.getReferenceById(id).getPets()
+                .stream()
+                .map(PetDTO::new)
+                .toList();
+    }
+
+    public List<PetDTO> listarPetsPorNome(String idOuNome) {
+        return repository.findByNome(idOuNome).getPets()
+                .stream()
+                .map(PetDTO::new)
+                .toList();
     }
 
     public ResponseEntity<String> cadastrarPet(String idOuNome, Pet pet) {
