@@ -2,7 +2,6 @@ package br.com.alura.adopet.api.controller;
 
 import br.com.alura.adopet.api.dto.TutorDTO;
 import br.com.alura.adopet.api.exception.ValidacaoException;
-import br.com.alura.adopet.api.model.Tutor;
 import br.com.alura.adopet.api.service.TutorService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
