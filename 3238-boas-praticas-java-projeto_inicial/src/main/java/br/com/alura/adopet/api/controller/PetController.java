@@ -19,7 +19,8 @@ public class PetController {
 
     @GetMapping
     public ResponseEntity<List<PetDTO>> listarTodosDisponiveis() {
-        return petService.listarTodosOsPetsDisponiveis();
+        List<PetDTO> pets = petService.listarTodosOsPetsDisponiveis();
+        return ResponseEntity.ok(pets);
     }
 
 }
